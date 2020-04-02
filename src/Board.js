@@ -24,6 +24,7 @@
       }, this);
     },
 
+
     togglePiece: function(rowIndex, colIndex) {
       this.get(rowIndex)[colIndex] = + !this.get(rowIndex)[colIndex];
       this.trigger('change');
@@ -79,12 +80,42 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      //console.log(this.get(rowIndex)); // 2 -- third rows
+      // this.rows() //   returns the whole matrix
+
+
+      //get the row stored at the rowIndex
+      let currentRow = this.get(rowIndex); //
+      //initialize a counter to count the number of 'queens' in the row
+      let counter = 0;
+      //iterate through the row
+      for (let i = 0; i < currentRow.length; i++) {
+        //for every queen, increment counter
+        counter += currentRow[i];
+      }
+      //if counter is greater than 1 at the end, return true
+      if (counter > 1) {
+        return true; // fixme
+      }
+        //otherwise return false
+      return false;
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      return false; // fixme
+    //  get the whole board
+    let currentBoard = this.rows();
+      // iterate over the board
+      for(let i = 0; i < this.rows().length; i++) {
+        //check if each element hasRowConflict
+
+        if(this.hasRowConflictAt(i)) {
+          // if it does return true
+          return true;
+        }
+      }
+      // other wise return false;
+      return false;
     },
 
 
@@ -94,12 +125,39 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      //get all the rows in the matrix and store them
+      let chessBoard = this.rows();
+      //create an array variable to store your column
+      let col = [];
+      //iterate through each of the individual rows within the entire entire matrix (not every value though)
+      for (let i = 0; i < chessBoard.length; i++) {
+        //for each row, push the value stored at colIndex into the column variable
+        col.push(chessBoard[i][colIndex]);
+      }
+      //then check to see if there are any conflicts using the same algorithm as hasRowConflictAt
+      let counter = 0;
+      //iterate through the row
+      for (let i = 0; i < col.length; i++) {
+        //for every queen, increment counter
+        counter += col[i];
+      }
+      //if counter is greater than 1 at the end, return true
+      if (counter > 1) {
+        return true;
+      }
+      return false;
+
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      return false; // fixme
+
+      for (var k = 0; k < this.rows()[0].length; k++) {
+        if(this.hasColConflictAt([k])) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
@@ -109,12 +167,44 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      // create two empty arrays / create two counters for the diagonal starting at first row and given column index and the inverse
+      const diagonal = [];
+      const inverseDiagonal = [];
+      let diagonalCounter = 0;
+      let diagonalInverseCounter = 0;
+
+      // starting at the first row and given column index, iterate through the major diagonal until the end of the rows
+      for (let i = 0; i + majorDiagonalColumnIndexAtFirstRow - 1 < this.rows()[0].length; i++) {
+        // push/store that current value in our array - diagonalArray - inverseAray
+        diagonal.push(this.rows()[i][i + majorDiagonalColumnIndexAtFirstRow]);
+        console.log(this.rows()[i + majorDiagonalColumnIndexAtFirstRow][i])
+        inverseDiagonal.push(this.rows()[i + majorDiagonalColumnIndexAtFirstRow][i]);
+        console.log(this.rows()[i + majorDiagonalColumnIndexAtFirstRow][i]);
+
+      }
+
+      // iterate over diagonal/inverse array,
+      for (let k = 0; k < diagonal.length; k++) {
+        // do if statements for both
+        diagonalCounter += diagonal[k];
+        diagonalInverseCounter += inverseDiagonal[k];
+      }
+      //for every queen, increment counter
+
+      return diagonalCounter > 1 || diagonalInverseCounter > 1
+      //if either counter is greater than 1 at the end, return true
+      // otherwise , return false
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+
+      for (var k = 0; k < this.rows()[0].length; k++) {
+        if(this.hasMajorDiagonalConflictAt([k])) {
+          return true;
+        }
+      }
+      return false;
     },
 
 
