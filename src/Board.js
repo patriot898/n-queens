@@ -188,10 +188,7 @@
       for (let i = 0; i + majorDiagonalColumnIndexAtFirstRow < this.rows()[0].length; i++) {
         // push/store that current value in our array - diagonalArray - inverseAray
         diagonal.push(this.rows()[i][i + majorDiagonalColumnIndexAtFirstRow]);
-        console.log(i);
         inverseDiagonal.push(this.rows()[i + majorDiagonalColumnIndexAtFirstRow][i]);
-        console.log(this.rows()[i + majorDiagonalColumnIndexAtFirstRow][i]);
-
       }
       //for every queen, increment counter
     }
@@ -227,12 +224,54 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      const diagonal = [];
+      const inverseDiagonal = [];
+      let diagonalCounter = 0;
+      let diagonalInverseCounter = 0;
+
+      //if the minorDiagonalColumnIndexAtFirstRow is the same as the index of the last column
+      if (minorDiagonalColumnIndexAtFirstRow === this.rows()[0].length - 1) {
+        //iterate through the minor diagonal starting at column last index  and row index 0 until the end of the row's length
+        for (let i = this.rows()[0].length - 1; i > -1; i--) {
+          //push the diagonal values into the diagonal array
+          diagonal.push(this.rows()[minorDiagonalColumnIndexAtFirstRow - i][i]);
+        }
+        //edge case: if columnindex is equal to the last index of the first row, then always return false
+      } else if( minorDiagonalColumnIndexAtFirstRow === 0) {
+          return false;
+      } else {
+      //starting at the first row and given column index, iterate through the major diagonal until the end of the rows
+      const difference = this.rows()[0].length - 1 - minorDiagonalColumnIndexAtFirstRow;
+      for (let i = minorDiagonalColumnIndexAtFirstRow; i > -1; i--) {
+        // push/store that current value in our array - diagonalArray - inverseAray
+        diagonal.push(this.rows()[minorDiagonalColumnIndexAtFirstRow - i][i]);
+        inverseDiagonal.push(this.rows()[minorDiagonalColumnIndexAtFirstRow - i + difference][i + difference]);
+      }
+      //for every queen, increment counter
+    }
+    // iterate over diagonal/inverse array,
+    for (let k = 0; k < diagonal.length; k++) {
+      // do if statements for both
+      diagonalCounter += diagonal[k];
+      if (inverseDiagonal.length) {
+        diagonalInverseCounter += inverseDiagonal[k];
+      }
+    }
+
+      return diagonalCounter > 1 || diagonalInverseCounter > 1
+      //if either counter is greater than 1 at the end, return true
+      // otherwise , return false
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      for (var k = 0; k < this.rows()[0].length; k++) {
+        if(this.hasMinorDiagonalConflictAt(k)) {
+          return true;
+        }
+      }
+      return false;
+
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
